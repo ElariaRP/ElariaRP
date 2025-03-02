@@ -36,6 +36,30 @@ body::-webkit-scrollbar {
             padding: 0;
             overflow-x: hidden;
         }
+
+        .server-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
         
         .container {
             display: flex;
@@ -47,7 +71,7 @@ body::-webkit-scrollbar {
         }
 
         .logo {
-            width: 1800px;
+            width: 1300px;
             opacity: 0;
             transform: scale(0.5);
             animation: fadeInZoom 1.5s forwards;
@@ -178,6 +202,11 @@ body::-webkit-scrollbar {
         <img src="logo1.png" alt="Elaria RP Logo" class="logo">
         <div class="scroll-arrow">⬇</div>
     </div>
+    <!-- Server Player Count Display -->
+    <div class="server-status">
+        <span class="status-indicator" id="status-indicator"></span>
+        <span>Serveryje žaidėjų: <span id="player-count">0</span>/128</span>
+    </div>
     
     <div class="info-container">
         <div class="info-box" onclick="openPopup('info1')">
@@ -200,6 +229,27 @@ body::-webkit-scrollbar {
             <span>Mūsų discord!</span>
         </a>
     </div>
+
+    <script>
+        function updatePlayerCount() {
+            fetch('https://servers-frontend.fivem.net/api/servers/single/48adaq')
+                .then(response => response.json())
+                .then(data => {
+                    const playerCount = data.Data.players.length;
+                    document.getElementById("player-count").textContent = playerCount;
+                    document.getElementById("status-indicator").style.backgroundColor = "green";
+                })
+                .catch(error => {
+                    console.error('Klaida gaunant žaidėjų skaičių:', error);
+                    document.getElementById("status-indicator").style.backgroundColor = "red";
+                });
+        }
+
+        setInterval(updatePlayerCount, 10000);
+        updatePlayerCount();
+    </script>
+</body>
+</html>
     
     <style>
         .join-section {
